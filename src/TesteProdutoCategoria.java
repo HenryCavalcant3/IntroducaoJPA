@@ -1,15 +1,21 @@
+import DAO.CategoriaDAO;
+import DAO.ProdutoDAO;
+import br.edu.ifsp.pep.modelo.Categoria;
 import java.util.List;
 
 import br.edu.ifsp.pep.modelo.Produto;
+import java.math.BigDecimal;
+import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 public class TesteProdutoCategoria {
     public static void main(String[] args) {
-        Persistence em = Persistence
-            .createEntityManagerFactory("aulaPU")
-            .createEntityManager();
-
         Categoria categoria = new Categoria();
         categoria.setDescricao("Informatica");
+        
+        CategoriaDAO categoriaDAO = new CategoriaDAO();
+        categoriaDAO.inserir(categoria);
 
         Produto produto = new Produto();
         produto.setDescricao("Teclado");
@@ -18,19 +24,15 @@ public class TesteProdutoCategoria {
 
         produto.setCategoria(categoria);
 
-        em.getTransaction().begin();
-        em.persist(categoria);
-        em.persist(produto);
-        em.getTransaction().commit();
+        ProdutoDAO produtoDAO = new ProdutoDAO();
+        produtoDAO.inserir(produto);
         
-       TypedQuery<Produto> query = em.createQuery("SELECT p FROM Produto p", Produto.class);
-
-        List<Produto> produtos = query.getResultList();
+        List<Produto> produtos = produtoDAO.listar();
 
         for(Produto p : produtos) {
             System.out.println("Descricao: " + p.getDescricao());
         }
-
-        em.close();
+        
+        System.out.println("teste");
     }
 }
